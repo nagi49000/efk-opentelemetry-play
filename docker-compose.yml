@@ -43,5 +43,28 @@ services:
     depends_on:
       - elasticsearch
 
+  memgraphmage:
+    image: memgraph/memgraph-mage:latest
+    container_name: memgraph-mage
+    ports:
+      - "7687:7687"
+      - "7444:7444"
+    command: ["--log-level=DEBUG"]
+    networks:
+      - esnet
+
+  memgraphlab:
+    image: memgraph/lab:latest
+    container_name: memgraph-lab
+    ports:
+      - "3000:3000"
+    depends_on:
+      - memgraphmage
+    environment:
+      - QUICK_CONNECT_MG_HOST=memgraphmage
+      - QUICK_CONNECT_MG_PORT=7687
+    networks:
+      - esnet
+
 networks:
   esnet:
