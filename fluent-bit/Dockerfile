@@ -19,10 +19,9 @@ RUN git clone --depth 1 https://github.com/nagi49000/fluent-bit-disk.git && \
     cd build && \
     cmake -DFLB_SOURCE=/build/fluent-bit/ -DPLUGIN_NAME=in_vdisk .. && \
     make && \
-    find ./ -name *.so
-
-FROM fluent/fluent-bit:${VERSION}-debug
-RUN mkdir /fluent-bit/plugins && \
+    find ./ -name *.so && \
     echo "    Path /fluent-bit/plugins/flb-in_vdisk.so" >> /fluent-bit/etc/plugins.conf
 
+FROM fluent/fluent-bit:${VERSION}
+COPY --from=builder /fluent-bit/etc/plugins.conf /fluent-bit/etc/plugins.conf
 COPY --from=builder /build/fluent-bit-disk/build/flb-in_vdisk.so /fluent-bit/plugins/flb-in_vdisk.so
