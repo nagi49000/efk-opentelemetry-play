@@ -3,7 +3,6 @@ services:
   fluentbit:
     build: ./fluent-bit
     container_name: fluentbit
-    # image: fluent/fluent-bit:latest-debug
     volumes:
       - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
       - /var/log:/etc/host-var-log:ro
@@ -44,7 +43,8 @@ services:
       - elasticsearch
 
   memgraphmage:
-    image: memgraph/memgraph-mage:latest
+    # image: memgraph/memgraph-mage:1.18.1-memgraph-2.18.1
+    build: ./memgraph-mage
     container_name: memgraph-mage
     ports:
       - "7687:7687"
@@ -54,7 +54,7 @@ services:
       - esnet
 
   memgraphlab:
-    image: memgraph/lab:latest
+    image: memgraph/lab:2.15.0
     container_name: memgraph-lab
     ports:
       - "3000:3000"
