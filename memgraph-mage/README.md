@@ -1,4 +1,4 @@
-### Memgraph stack
+# Memgraph stack
 
 The stack includes `memgraph-mage`, which is the actual processing enginer, and `memgraph-lab`, which is a UI, available on `http://localhost:3000`.
 
@@ -16,6 +16,9 @@ CALL elastic_search_serialization.search("fluent-bit-metrics-disk",  "{\"match_a
 YIELD result
 RETURN result;
 ```
+
+### Creating graphs from elastic output (for analysis)
+
 One can get the last minute of activity with
 ```
 CALL elastic_search_serialization.search("fluent-bit-metrics-cpu",  
@@ -71,6 +74,8 @@ MERGE (t:Timepoint {stamp: datetime(left(h._source.`@timestamp`, 19) + "Z")})
 MERGE (m:LogMessage {log: h._source.log})
 MERGE (t)-[:HAS_LOG_MESSAGE]->(m);
 ```
+### Running graph analytics
+
 One can then explore the graph to, say, find the 'busiest' Timepoint nodes (by degree centrality)
 ```
 CALL degree_centrality.get("out")
