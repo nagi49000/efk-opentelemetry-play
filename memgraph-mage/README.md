@@ -75,5 +75,5 @@ One can then explore the graph to, say, find the 'busiest' Timepoint nodes (by d
 ```
 CALL degree_centrality.get("out")
 YIELD degree, node
-RETURN degree, node ORDER BY degree DESC
+RETURN degree, node ORDER BY degree DESC LIMIT 10
 ```
