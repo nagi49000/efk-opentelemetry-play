@@ -10,4 +10,4 @@ docker compose up --build
 
 Elasticsearch and Kibana are available on their usual ports; `http://localhost:9200` and `http://localhost:5601` respectively.
 
-There is also a memgraph stack that can hook up to Elasticsearch. This acts as a graph-based analytics service.
+There is also a memgraph stack that can hook up to Elasticsearch. This acts as a graph-based analytics service; documentation is [here](memgraph-mage/README.md).
