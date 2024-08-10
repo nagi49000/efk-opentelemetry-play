@@ -71,4 +71,9 @@ MERGE (t:Timepoint {stamp: datetime(left(h._source.`@timestamp`, 19) + "Z")})
 MERGE (m:LogMessage {log: h._source.log})
 MERGE (t)-[:HAS_LOG_MESSAGE]->(m);
 ```
-
+One can then explore the graph to, say, find the 'busiest' Timepoint nodes (by degree centrality)
+```
+CALL degree_centrality.get("out")
+YIELD degree, node
+RETURN degree, node ORDER BY degree DESC
+```
