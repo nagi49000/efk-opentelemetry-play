@@ -21,7 +21,7 @@ RETURN result;
 
 One can get the last minute of activity with
 ```
-CALL elastic_search_serialization.search("fluent-bit-metrics-cpu",  
+CALL elastic_search_serialization.search("fluent-bit-metrics-cpu",
 '{"range": {"@timestamp": {"time_zone": "+00:00", "gte": "now-1m", "lte": "now"}}}',
 1000, 0)
 YIELD result
@@ -29,7 +29,7 @@ RETURN result.hits.hits;
 ```
 One can build up a graph (where the each timestamp becomes a pizza node for log messages and metrics activity) with
 ```
-CALL elastic_search_serialization.search("fluent-bit-metrics-cpu",  
+CALL elastic_search_serialization.search("fluent-bit-metrics-cpu",
 '{"range": {"@timestamp": {"time_zone": "+00:00", "gte": "now-1m", "lte": "now"}}}',
 1000, 0)
 YIELD result
@@ -38,7 +38,7 @@ MERGE (t:Timepoint {stamp: datetime(left(h._source.`@timestamp`, 19) + "Z")})
 MERGE (m:MetricCpu {cpu: h._source.cpu_p})
 MERGE (t)-[:HAS_CPU_VALUE]->(m);
 
-CALL elastic_search_serialization.search("fluent-bit-metrics-memory",  
+CALL elastic_search_serialization.search("fluent-bit-metrics-memory",
 '{"range": {"@timestamp": {"time_zone": "+00:00", "gte": "now-1m", "lte": "now"}}}',
 1000, 0)
 YIELD result
@@ -47,7 +47,7 @@ MERGE (t:Timepoint {stamp: datetime(left(h._source.`@timestamp`, 19) + "Z")})
 MERGE (m:MetricMem {mem_used: h._source.`Mem.used`})
 MERGE (t)-[:HAS_MEM_USED]->(m);
 
-CALL elastic_search_serialization.search("fluent-bit-metrics-disk",  
+CALL elastic_search_serialization.search("fluent-bit-metrics-disk",
 '{"range": {"@timestamp": {"time_zone": "+00:00", "gte": "now-1m", "lte": "now"}}}',
 1000, 0)
 YIELD result
@@ -56,7 +56,7 @@ MERGE (t:Timepoint {stamp: datetime(left(h._source.`@timestamp`, 19) + "Z")})
 MERGE (m:MetricDisk {mem_used: h._source.bytes_free})
 MERGE (t)-[:HAS_DISK_BYTES_FREE]->(m);
 
-CALL elastic_search_serialization.search("fluent-bit-metrics-diskio",  
+CALL elastic_search_serialization.search("fluent-bit-metrics-diskio",
 '{"range": {"@timestamp": {"time_zone": "+00:00", "gte": "now-1m", "lte": "now"}}}',
 1000, 0)
 YIELD result
@@ -65,7 +65,7 @@ MERGE (t:Timepoint {stamp: datetime(left(h._source.`@timestamp`, 19) + "Z")})
 MERGE (m:MetricDiskio {read_size: h._source.read_size, write_size: h._source.write_size})
 MERGE (t)-[:HAS_DISKIO]->(m);
 
-CALL elastic_search_serialization.search("fluent-bit-logging",  
+CALL elastic_search_serialization.search("fluent-bit-logging",
 '{"range": {"@timestamp": {"time_zone": "+00:00", "gte": "now-1m", "lte": "now"}}}',
 1000, 0)
 YIELD result
