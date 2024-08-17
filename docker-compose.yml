@@ -9,6 +9,7 @@ services:
     networks:
       - esnet
 
+  # sidecar container to run commands for setting up elasticsearch
   elasticsearch-setup:
     build: ./elasticsearch-setup
     container_name: elasticsearch-setup
