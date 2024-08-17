@@ -9,8 +9,17 @@ services:
     networks:
       - esnet
 
+  elasticsearch-setup:
+    build: ./elasticsearch-setup
+    container_name: elasticsearch-setup
+    networks:
+      - esnet
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
   elasticsearch:
-    build: ./elasticsearch
+    image: elasticsearch:8.14.3
     container_name: elasticsearch
     environment:
       - network.host=0.0.0.0
@@ -39,10 +48,9 @@ services:
     image: kibana:8.14.3
     container_name: kibana
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - SERVER_HOSTS=0.0.0.0
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=changeme
+    # some things are just too complicated to specify as env vars... so into a yml they go
     volumes:
       - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     ports:

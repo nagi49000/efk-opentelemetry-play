@@ -1,3 +1,9 @@
+# Default Kibana configuration for docker target
+server.host: "0.0.0.0"
+server.shutdownTimeout: "5s"
+elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+
+# specify the packages/integrations for kibana to install
 xpack.fleet.packages:
 - name: apm
-  version: latest
+  version: 8.14.3
