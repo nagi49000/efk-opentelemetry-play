@@ -1,0 +1,3 @@
+xpack.fleet.packages:
+- name: apm
+  version: latest

@@ -43,6 +43,8 @@ services:
       - SERVER_HOSTS=0.0.0.0
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=changeme
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     ports:
       - "5601:5601"
     networks:
@@ -58,15 +60,21 @@ services:
   apm-server:
     image: elastic/apm-server:8.14.3
     container_name: apm-server
-    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
-    cap_drop: ["ALL"]
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
     ports:
       - 8200:8200
     command: >
-       apm-server
-          -e
-    volumes:
-      - ./apm-server/apm-server.docker.yml:/usr/share/apm-server/apm-server.yml:ro
+       apm-server -e
+         -E apm-server.host="0.0.0.0:8200"
+         -E output.elasticsearch.hosts=["http://elasticsearch:9200"]
+         -E output.elasticsearch.username=apm_system
+         -E output.elasticsearch.password=changeme
     networks:
       - esnet
     depends_on:
