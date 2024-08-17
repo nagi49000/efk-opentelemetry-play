@@ -6,11 +6,11 @@ On connecting to the UI, one can connect to `memgraph-mage`, click on `Query exe
 
 One can check connection ability to the elasticsearch instance, in the `Cypher editor`, with
 ```
-CALL elastic_search_serialization.connect("http://elasticsearch:9200")
+CALL elastic_search_serialization.connect("http://elasticsearch:9200", NULL, "elastic", "changeme")
 YIELD connection_status
 RETURN connection_status;
 ```
-and running the query. If connection works, then retreiving results should also work, which the serialization plugin also supports, e.g. on an index called `fluent-bit-metrics-disk`
+and running the query. This will probably be needed to be at the top of any cypher scripts made up to run as a query. If connection works, then retreiving results should also work, which the serialization plugin also supports, e.g. on an index called `fluent-bit-metrics-disk`
 ```
 CALL elastic_search_serialization.search("fluent-bit-metrics-disk",  "{\"match_all\": {}}", 1000, 0)
 YIELD result
