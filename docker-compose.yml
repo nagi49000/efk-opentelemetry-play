@@ -10,7 +10,7 @@ services:
       - esnet
 
   elasticsearch:
-    image: elasticsearch:8.14.3
+    build: ./elasticsearch
     container_name: elasticsearch
     environment:
       - network.host=0.0.0.0
@@ -18,7 +18,7 @@ services:
       - cluster.name=docker-cluster
       - node.name=cluster1-node1
       - xpack.license.self_generated.type=basic
-      - xpack.security.enabled=false
+      - xpack.security.enabled=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - ELASTIC_PASSWORD=changeme
     ulimits:
@@ -41,8 +41,8 @@ services:
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - SERVER_HOSTS=0.0.0.0
-      # - ELASTICSEARCH_USERNAME=elastic
-      # - ELASTICSEARCH_PASSWORD=changeme
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=changeme
     ports:
       - "5601:5601"
     networks:
