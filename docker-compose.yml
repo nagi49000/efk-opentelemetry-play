@@ -90,6 +90,19 @@ services:
       - elasticsearch
       - kibana
 
+  fastapi-app:
+    build: ./fastapi-app
+    container_name: fastapi-app
+    ports:
+      - "6780:6780"
+    networks:
+      - esnet
+    healthcheck:
+        test: python -c 'import requests; assert requests.get("http://localhost:6780/hello_world").status_code == 200'
+        interval: 30s
+        timeout: 30s
+        retries: 3
+
   memgraphmage:
     # image: memgraph/memgraph-mage:1.18.1-memgraph-2.18.1
     build: ./memgraph-mage
@@ -101,7 +114,7 @@ services:
     networks:
       - esnet
     healthcheck:
-        test: echo 'import requests; requests.get("http://localhost:7444")' | python3
+        test: python3 -c 'import requests; assert requests.get("http://localhost:7444").status_code == 400'
         interval: 30s
         timeout: 30s
         retries: 3
