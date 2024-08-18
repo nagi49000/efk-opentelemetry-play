@@ -93,6 +93,13 @@ services:
   fastapi-app:
     build: ./fastapi-app
     container_name: fastapi-app
+    environment:
+      # specify OTEL as per https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://apm-server:8200
+      # - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://apm-server:8200/v1/traces
+      # - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://apm-server:8200/v1/metrics
+      # - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://apm-server:8200/v1/logs
+      # - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     ports:
       - "6780:6780"
     networks:

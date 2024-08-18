@@ -4,8 +4,9 @@ FROM python:3.12-slim-bookworm as builder
 ENV APP_HOME=/app
 # run mkdir so that folder owned by mambauser
 WORKDIR ${APP_HOME}
-COPY api ./
+COPY api/requirements.txt ./
 RUN pip install -r requirements.txt
+COPY api ./
 
 FROM builder AS tester
 RUN pip install pytest-cov flake8 && \
@@ -18,4 +19,7 @@ RUN groupadd --system app && \
     chown -R app:app ${APP_HOME} && \
     chmod -R 755 ${APP_HOME}
 USER app
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "api.api_app:app", "--bind", "0.0.0.0:6780", "--log-level", "DEBUG"]
+
+ENV LOG_LEVEL=DEBUG
+
+CMD gunicorn --workers 2 --worker-class uvicorn.workers.UvicornWorker api.api_app:app --bind 0.0.0.0:6780 --log-level ${LOG_LEVEL}
