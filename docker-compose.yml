@@ -82,8 +82,9 @@ services:
        apm-server -e
          -E apm-server.host="0.0.0.0:8200"
          -E output.elasticsearch.hosts=["http://elasticsearch:9200"]
-         -E output.elasticsearch.username=apm_system
+         -E output.elasticsearch.username=elastic
          -E output.elasticsearch.password=changeme
+         -E logging.level=warning
     networks:
       - esnet
     depends_on:

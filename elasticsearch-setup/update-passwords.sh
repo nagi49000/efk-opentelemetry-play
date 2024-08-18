@@ -7,3 +7,4 @@ do
   echo "Updating password for user " ${key}
   curl -XPOST --header "Content-Type: application/json" --user elastic:changeme http://elasticsearch:9200/_security/user/${key}/_password --data '{"password":"changeme"}'
 done
+echo "All passwords updated :-)"
