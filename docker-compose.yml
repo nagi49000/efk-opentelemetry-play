@@ -98,6 +98,7 @@ services:
     environment:
       # specify OTEL as per https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://apm-server:8200
+      - OTEL_SERVICE_NAME=fastapi-app
       # - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://apm-server:8200/v1/traces
       # - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://apm-server:8200/v1/metrics
       # - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://apm-server:8200/v1/logs
