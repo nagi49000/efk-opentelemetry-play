@@ -53,7 +53,7 @@ def create_app(logger_name="gunicorn.error"):
         logger.debug('/parrot_back: '+str(p_dict))
         params = p_dict['parrot_request']
         r_dict = {'header': p_dict['header'],
-                  'results': {'time': datetime.datetime.utcnow().isoformat(timespec='seconds')+'Z',
+                  'results': {'time': datetime.datetime.now(datetime.UTC).isoformat(timespec='seconds'),
                               'parrot': 'parrot back ' + params['sep'].join([params['parrot_str']]*params['n_repeat'])
                               }
                   }

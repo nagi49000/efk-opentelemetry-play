@@ -22,4 +22,4 @@ USER app
 
 ENV LOG_LEVEL=DEBUG
 
-CMD gunicorn --workers 2 --worker-class uvicorn.workers.UvicornWorker api.api_app:app --bind 0.0.0.0:6780 --log-level ${LOG_LEVEL}
+CMD opentelemetry-instrument --service_name fastapi-app --log_level ${LOG_LEVEL} gunicorn --workers 2 --worker-class uvicorn.workers.UvicornWorker api.api_app:app --bind 0.0.0.0:6780 --log-level ${LOG_LEVEL}

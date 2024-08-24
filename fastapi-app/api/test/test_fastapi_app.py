@@ -30,4 +30,4 @@ def test_parrot_back(client):
     j = response.json()
     assert j["header"] == "my_header"
     assert j["results"]["parrot"] == "parrot back blah, blah, blah"
-    datetime.datetime.strptime(j["results"]["time"], "%Y-%m-%dT%H:%M:%SZ")
+    datetime.datetime.strptime(j["results"]["time"], "%Y-%m-%dT%H:%M:%S+00:00")
