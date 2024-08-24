@@ -1,7 +1,5 @@
-# efk-stack-play
-A play area for an EFK stack running locally.
-
-The fluent-bit build involves building the vdisk fluent-bit plugin, and dropping it into a fluent-bit image.
+# efk-opentelemtry-play
+A play area for an EFK stack running locally using opentelemetry for sending logs, metrics and traces.
 
 The stack can be brought up with
 ```
