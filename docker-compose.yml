@@ -1,7 +1,7 @@
 version: '3'
 services:
   fluentbit:
-    build: ./fluent-bit
+    image: fluent/fluent-bit:3.1.4
     container_name: fluentbit
     volumes:
       - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
@@ -102,6 +102,7 @@ services:
       # - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://apm-server:8200/v1/metrics
       # - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://apm-server:8200/v1/logs
       # - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - LOG_LEVEL=INFO
     ports:
       - "6780:6780"
     networks:
@@ -111,39 +112,6 @@ services:
         interval: 30s
         timeout: 30s
         retries: 3
-
- # memgraphmage:
- #   build: ./memgraph-mage
- #   container_name: memgraph-mage
- #   ports:
- #     - "7687:7687"
- #     - "7444:7444"
- #   command: ["--log-level=DEBUG"]
- #   networks:
- #     - esnet
- #   healthcheck:
- #       test: python3 -c 'import requests; assert requests.get("http://localhost:7444").status_code == 400'
- #       interval: 30s
- #       timeout: 30s
- #       retries: 3
-
- # memgraphlab:
- #   image: memgraph/lab:2.15.0
- #   container_name: memgraph-lab
- #   ports:
- #     - "3000:3000"
- #   depends_on:
- #     - memgraphmage
- #   environment:
- #     - QUICK_CONNECT_MG_HOST=memgraphmage
- #     - QUICK_CONNECT_MG_PORT=7687
- #   networks:
- #     - esnet
- #   healthcheck:
- #       test: wget -O - http://localhost:3000 > /dev/null
- #       interval: 30s
- #       timeout: 30s
- #       retries: 3
 
 networks:
   esnet:
