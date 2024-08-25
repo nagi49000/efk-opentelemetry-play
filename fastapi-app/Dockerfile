@@ -27,14 +27,9 @@ ENV LOG_LEVEL=DEBUG
 
 CMD opentelemetry-instrument \
     --traces_exporter=console \
-    --log_level=debug \
+    --log_level=${LOG_LEVEL} \
     --logs_exporter=console \
-    --metrics_exporter=none \
-    uvicorn \
-    api.api_app:app  \
-    --host=0.0.0.0 \
-    --port=6780 \
-    --workers=1
-
-
-# CMD opentelemetry-instrument --traces_exporter console --metrics_exporter console  --service_name fastapi-app --log_level ${LOG_LEVEL} gunicorn --workers 2 --worker-class uvicorn.workers.UvicornWorker api.api_app:app --bind 0.0.0.0:6780 --log-level ${LOG_LEVEL}
+    --metrics_exporter=console \
+    --service_name=fastapi-app \
+    # uvicorn api.api_app:app --host=0.0.0.0 --port=6780 --workers=1
+    gunicorn --workers 2 --worker-class uvicorn.workers.UvicornWorker api.api_app:app --bind 0.0.0.0:6780 --log-level ${LOG_LEVEL}
