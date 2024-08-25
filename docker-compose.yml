@@ -41,7 +41,7 @@ services:
       - esnet
     healthcheck:
         test: "curl --silent --fail --user elastic:changeme localhost:9200/_cluster/health || exit 1"
-        interval: 30s
+        interval: 10s
         timeout: 30s
         retries: 3
 
@@ -97,19 +97,21 @@ services:
     container_name: fastapi-app
     environment:
       # specify OTEL as per https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://fluentbit:4318
-      # - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://apm-server:8200/v1/traces
-      # - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://apm-server:8200/v1/metrics
-      # - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://apm-server:8200/v1/logs
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://apm-server:8200
+      - OTEL_SERVICE_NAME=fastapi-app
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
       - LOG_LEVEL=DEBUG
+      # handy to set these for debug - OTEL output should appear in docker logs
+      # - OTEL_TRACES_EXPORTER=console
+      # - OTEL_METRICS_EXPORTER=console
+      # - OTEL_LOGS_EXPORTER=console
     ports:
       - "6780:6780"
     networks:
       - esnet
     healthcheck:
         test: python -c 'import requests; assert requests.get("http://localhost:6780/hello_world").status_code == 200'
-        interval: 3s
+        interval: 30s
         timeout: 30s
         retries: 3
 

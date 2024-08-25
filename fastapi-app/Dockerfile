@@ -24,12 +24,7 @@ RUN groupadd --system app && \
 USER app
 
 ENV LOG_LEVEL=DEBUG
+ENV N_WORKERS=2
 
-CMD opentelemetry-instrument \
-    --traces_exporter=console \
-    --log_level=${LOG_LEVEL} \
-    --logs_exporter=console \
-    --metrics_exporter=console \
-    --service_name=fastapi-app \
-    # uvicorn api.api_app:app --host=0.0.0.0 --port=6780 --workers=1
-    gunicorn --workers 2 --worker-class uvicorn.workers.UvicornWorker api.api_app:app --bind 0.0.0.0:6780 --log-level ${LOG_LEVEL}
+CMD opentelemetry-instrument --log_level=${LOG_LEVEL} \
+    gunicorn --workers ${N_WORKERS} --worker-class uvicorn.workers.UvicornWorker api.api_app:app --bind 0.0.0.0:6780 --log-level ${LOG_LEVEL}
