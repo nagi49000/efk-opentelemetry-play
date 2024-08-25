@@ -27,11 +27,26 @@ pipeline:
     - name: tail
       tag: logging.host_logs.*
       path: /etc/host-var-log/*log
+      processors:
+        logs:
+          - name: opentelemetry_envelope
+          - name: content_modifier
+            context: otel_resource_attributes
+            action: upsert
+            key: service.name
+            value: fluent-bit-host
     - name: node_exporter_metrics
       tag: node_metrics
       scrape_interval: 2
+      processors:
+        metrics:
+          - name: labels
+            upsert: color red
 
   outputs:
+    # Uncomment for DEBUG in docker logs
+    # - name: stdout
+    #   match: "*"
     - Name: opentelemetry
       Match: "*"
       Host: apm-server
