@@ -100,7 +100,7 @@ services:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://apm-server:8200
       - OTEL_SERVICE_NAME=fastapi-app
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
-      - LOG_LEVEL=DEBUG
+      - LOG_LEVEL=INFO
       # handy to set these for debug - OTEL output should appear in docker logs
       # - OTEL_TRACES_EXPORTER=console
       # - OTEL_METRICS_EXPORTER=console

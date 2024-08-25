@@ -5,7 +5,11 @@ from api.fastapi_app import create_app
 
 
 @pytest.fixture()
-def client():
+def client(monkeypatch):
+    monkeypatch.setenv("OTEL_SERVICE_NAME", "test_fast_api")
+    monkeypatch.setenv("OTEL_TRACES_EXPORTER", "console")
+    monkeypatch.setenv("OTEL_METRICS_EXPORTER", "console")
+    monkeypatch.setenv("OTEL_LOGS_EXPORTER", "console")
     with TestClient(create_app()) as client:
         yield client
 
