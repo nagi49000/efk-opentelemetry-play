@@ -1,0 +1,64 @@
+---
+# setting up a local environment variable
+env:
+  flush_interval: 1
+  log_level: warning
+
+# service configuration
+service:
+  flush: ${flush_interval}
+  daemon: off
+  log_level: ${log_level}
+  http_server: on
+  parsers_file: parsers.conf
+  plugins_file: plugins.conf
+  http_server: on
+  http_listen: 0.0.0.0
+  http_port: 2020
+  # https://docs.fluentbit.io/manual/administration/monitoring#health-check-for-fluent-bit
+  Health_Check: On
+  HC_Errors_Count: 5
+  HC_Retry_Failure_Count: 5
+  HC_Period: 5
+  storage.metrics: on
+
+pipeline:
+  inputs:
+    - name: tail
+      tag: logging.host_logs.*
+      path: /etc/host-var-log/*log
+      processors:
+        logs:
+          - name: opentelemetry_envelope
+          - name: content_modifier
+            context: otel_resource_attributes
+            action: upsert
+            key: service.name
+            value: ${OTEL_SERVICE_NAME}
+    - name: node_exporter_metrics
+      tag: node_metrics
+      scrape_interval: 2
+
+  outputs:
+    # Uncomment for DEBUG in docker logs
+    # - name: stdout
+    #   match: "*"
+    - Name: opentelemetry
+      Match: "*"
+      Host: apm-server
+      Port: 8200
+      Metrics_uri: /v1/metrics
+      Logs_uri: /v1/logs
+      Traces_uri: /v1/traces
+      Log_response_payload: False
+      Tls: Off
+      Tls.verify: Off
+      logs_body_key: $message
+      logs_span_id_message_key: span_id
+      logs_trace_id_message_key: trace_id
+      logs_severity_text_message_key: loglevel
+      logs_severity_number_message_key: lognum
+      # add user-defined labels to metrics
+      add_label: service.name ${OTEL_SERVICE_NAME}
+      add_label: color blue
+...

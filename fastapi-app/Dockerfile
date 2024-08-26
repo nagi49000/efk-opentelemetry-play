@@ -13,7 +13,7 @@ COPY api ./
 FROM builder AS tester
 # seperated these out so that failures are clearer to see
 RUN pip install pytest-cov flake8
-RUN python -m flake8 --max-line-length=119
+RUN python -m flake8 --verbose --max-line-length=119
 RUN python -m pytest --cov=./api
 
 FROM builder AS prod

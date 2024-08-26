@@ -2,6 +2,11 @@ from fastapi import FastAPI
 import datetime
 import logging
 from pydantic import BaseModel
+# for sending logs through OTEL
+from opentelemetry._logs import set_logger_provider
+from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
+from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
+from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 
 
 class HelloWorldResponse(BaseModel):
@@ -31,6 +36,18 @@ class ParrotBackResponse(BaseModel):
 
 def get_gunicorn_logger(name="gunicorn.error"):
     logger = logging.getLogger(name)  # dirty way of wiring into the gunicorn logger
+
+    # added in an OTEL handler to the logger
+    # Create and set the logger provider
+    logger_provider = LoggerProvider()
+    set_logger_provider(logger_provider)
+    # Create the OTLP log exporter that sends logs to configured destination
+    exporter = OTLPLogExporter()
+    logger_provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
+    # Attach OTLP handler to root logger
+    handler = LoggingHandler(logger_provider=logger_provider)
+    logger.addHandler(handler)
+
     # overwrite the root logger with the gunicorn logger
     root_logger = logging.getLogger()
     root_logger.handlers = logger.handlers
