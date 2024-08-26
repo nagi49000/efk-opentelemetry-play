@@ -1,6 +1,10 @@
 # efk-opentelemtry-play
 A play area for an EFK stack running locally using opentelemetry for sending logs, metrics and traces.
 
+The descriptions for Opentelemetry and implementations can be rather obtuse. The motivation is a vendor-agnostic way of handling traces in a centralised manner (which then also allows centralised logs and metrics as a small piggy back). The abstract model (abstract in the sense that no techs are specified) is an Opentelemetry agent (running the Opentelemtry SDK/API) sending, via OTLP, logs metrics and traces to an Opentelemtry collector. This model can be daisy-chained.
+
+The implementation explored here is based on the [Elastic stack](https://www.elastic.co/guide/en/observability/current/apm-open-telemetry.html), where an APM server plays the role of the collector, and sends all data into Elastic for UI interaction in Kibana's observability. Multiple agents are explored (see the [Services](#services) section).
+
 The stack can be brought up with
 ```
 docker compose up --build
