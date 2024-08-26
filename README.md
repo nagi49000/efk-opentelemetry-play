@@ -14,11 +14,15 @@ The APM integration will create a data view called 'APM', which can be used dire
 
 ### Observability
 
+This is a main section, accessed in Kibana. From the hamburger icon on the top left, one can click on Observability.
+
 #### Services
 
 In Kibana, from the hamburger icon on the top left, one can click on Observability > APM > Services. This will show the services currently being monitored, which are
-- a FastAPI app (traces and logs)
-- a fluent-bit instance pulling logs and metrics from the host system
+- a FastAPI app (traces and logs). The pipeline of traces and logs looks like fastapiapp > apmserver > elastic. Logs are available under the tab for the service, traces are available under Observability > APM > Traces.
+- a fluent-bit instance pulling logs and metrics from the host system. The pipeline of host system logs and metrics looks like host > fluentbit > apmserver > elastic
+    - The logs will be under a proper service name, and can be accessed under the logs tab for that service.
+    - The metrics will be under a service name of 'unknown', since I haven't found a way of attaching a `service.name` to opentelemetry formatted metrics. The metrics are accessed under Observability > Infrastructure > Metrics Explorer.
 
 #### Alerts
 
