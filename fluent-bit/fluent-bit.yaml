@@ -34,14 +34,10 @@ pipeline:
             context: otel_resource_attributes
             action: upsert
             key: service.name
-            value: fluent-bit-host
+            value: ${OTEL_SERVICE_NAME}
     - name: node_exporter_metrics
       tag: node_metrics
       scrape_interval: 2
-      processors:
-        metrics:
-          - name: labels
-            upsert: color red
 
   outputs:
     # Uncomment for DEBUG in docker logs
@@ -63,6 +59,6 @@ pipeline:
       logs_severity_text_message_key: loglevel
       logs_severity_number_message_key: lognum
       # add user-defined labels to metrics
-      add_label: app fluent-bit
+      add_label: service.name ${OTEL_SERVICE_NAME}
       add_label: color blue
 ...
