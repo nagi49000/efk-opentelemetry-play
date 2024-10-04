@@ -1,10 +1,6 @@
 # Default Kibana configuration for docker target
 server.host: "0.0.0.0"
-server.shutdownTimeout: "5s"
 elasticsearch.hosts: [ "http://elasticsearch:9200" ]
 xpack.reporting.encryptionKey: "something_really_not_at_all_secret"
 xpack.encryptedSavedObjects.encryptionKey: "something_really_not_at_all_secret"
-# specify the packages/integrations for kibana to install
-xpack.fleet.packages:
-- name: apm
-  version: 8.14.3
+server.publicBaseUrl: http://localhost:5601

@@ -1,16 +1,5 @@
 version: '3'
 services:
-  fluentbit:
-    image: fluent/fluent-bit:3.1.4
-    container_name: fluentbit
-    environment:
-      - OTEL_SERVICE_NAME=fluent-bit-host
-    command: /fluent-bit/bin/fluent-bit -c fluent-bit/etc/fluent-bit.yaml
-    volumes:
-      - ./fluent-bit/fluent-bit.yaml:/fluent-bit/etc/fluent-bit.yaml:ro
-      - /var/log:/etc/host-var-log:ro
-    networks:
-      - esnet
 
   # sidecar container to run commands for setting up elasticsearch
   elasticsearch-setup:
@@ -23,7 +12,7 @@ services:
         condition: service_healthy
 
   elasticsearch:
-    image: elasticsearch:8.14.3
+    image: elasticsearch:7.12.0
     container_name: elasticsearch
     environment:
       - network.host=0.0.0.0
@@ -49,7 +38,7 @@ services:
         retries: 3
 
   kibana:
-    image: kibana:8.14.3
+    image: kibana:7.12.0
     container_name: kibana
     environment:
       - ELASTICSEARCH_USERNAME=kibana_system
@@ -70,7 +59,7 @@ services:
         retries: 3
 
   apm-server:
-    image: elastic/apm-server:8.14.3
+    image: elastic/apm-server:7.12.0
     container_name: apm-server
     cap_drop:
       - ALL
@@ -87,7 +76,7 @@ services:
          -E output.elasticsearch.hosts=["http://elasticsearch:9200"]
          -E output.elasticsearch.username=elastic
          -E output.elasticsearch.password=changeme
-         -E logging.level=warning
+         -E logging.level=debug
          -E apm-server.default_service_environment=development
     networks:
       - esnet
@@ -95,28 +84,24 @@ services:
       - elasticsearch
       - kibana
 
-  fastapi-app:
-    build: ./fastapi-app
-    container_name: fastapi-app
-    environment:
-      # specify OTEL as per https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://apm-server:8200
-      - OTEL_SERVICE_NAME=fastapi-app
-      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
-      - LOG_LEVEL=INFO
-      # handy to set these for debug - OTEL output should appear in docker logs
-      # - OTEL_TRACES_EXPORTER=console
-      # - OTEL_METRICS_EXPORTER=console
-      # - OTEL_LOGS_EXPORTER=console
-    ports:
-      - "6780:6780"
+  metricbeat:
+    image: elastic/metricbeat:7.12.0
+    container_name: metricbeat
+    volumes:
+      - /var:/varfs:ro
+      - /home:/homefs:ro
+    command: >
+       metricbeat -e
+         -E output.elasticsearch.hosts=["http://elasticsearch:9200"]
+         -E output.elasticsearch.username=elastic
+         -E output.elasticsearch.password=changeme
+         -E logging.level=info
+         -E name=aloha
     networks:
       - esnet
-    healthcheck:
-        test: python -c 'import requests; assert requests.get("http://localhost:6780/hello_world").status_code == 200'
-        interval: 30s
-        timeout: 30s
-        retries: 3
+    depends_on:
+      - elasticsearch
+      - kibana
 
 networks:
   esnet:
